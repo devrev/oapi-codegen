@@ -1,0 +1,72 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: OneOf parameter
+  description: Checks oneOf generation
+paths:
+  /config:
+    post:
+      summary: test call
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/date-time-preset"
+      responses:
+        "200":
+          description: Test successful
+components:
+  schemas:
+    date-time-preset:
+      type: object
+      discriminator:
+        mapping:
+          after_n_days: '#/components/schemas/day'
+          after_n_hours: '#/components/schemas/hour'
+          before_n_days: '#/components/schemas/day'
+          before_n_hours: '#/components/schemas/hour'
+          last_n_days: '#/components/schemas/day'
+          last_n_hours: '#/components/schemas/hour'
+        propertyName: value_type
+      oneOf:
+        - $ref: '#/components/schemas/day'
+        - $ref: '#/components/schemas/hour'
+      properties:
+        value_type:
+          $ref: '#/components/schemas/date-time-preset-value-type'
+      required:
+        - value_type
+      title: date-time-preset-operator
+    hour:
+      type: object
+      properties:
+        value_type:
+          type: string
+        value:
+          type: integer
+          format: int32
+      required:
+        - value
+        - value_type
+      title: int
+    day:
+      type: object
+      properties:
+        value_type:
+          type: string
+        value:
+          type: string
+          format: text
+      required:
+        - value
+        - value_type
+      title: string
+    date-time-preset-value-type:
+      type: string
+      enum:
+        - after_n_days
+        - after_n_hours
+        - before_n_days
+        - before_n_hours
+        - last_n_days
+        - last_n_hours
